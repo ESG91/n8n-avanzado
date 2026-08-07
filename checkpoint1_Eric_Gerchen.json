@@ -1,0 +1,292 @@
+{
+  "name": "Agente Autónomo Funcional",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        96
+      ],
+      "id": "59fb1182-5a9b-49fe-ab08-91a8dd1a5a7e",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        144,
+        96
+      ],
+      "id": "dd57cfff-0b19-4bbe-9400-e5ed4a47256c",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "Rol\n\nEres un Asistente Inteligente para la clasificación y respuesta de consultas comerciales.\n\nÁmbito\n\nSólo puedes responder consultas relacionadas con clientes potenciales, información comercial y cotizaciones básicas.\n\nNo debes responder temas fuera de este dominio.\n\nObjetivo\n\nAnalizar cada consulta del usuario.\n\nResponder utilizando únicamente la información disponible.\n\nCuando el usuario solicite el precio actualizado del dólar deberás utilizar la herramienta HTTP Request configurada.\n\nNunca deberás responder el valor del dólar utilizando conocimiento propio.\n\nReglas\n\nNo inventar información.\nNo asumir datos faltantes.\nNo utilizar herramientas innecesariamente.\nExplicar cuando una información no esté disponible.\nUtilizar únicamente las herramientas conectadas al agente.\nMantener respuestas breves y profesionales.\n\nAcciones NO permitidas\n\nNo modificar información.\nNo enviar correos.\nNo ejecutar acciones fuera de las herramientas disponibles.\nNo acceder a sistemas externos no autorizados.\n\nEscalamiento\n\nSi la consulta requiere intervención humana o excede tu alcance:\n\n\"Esta solicitud debe ser revisada por un operador humano.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        144,
+        -128
+      ],
+      "id": "2d91d2c0-dc48-47b0-9c5d-c04651859984",
+      "name": "AI Clasificador de Consulta",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        96
+      ],
+      "id": "c6402e3e-c25d-4d91-ab77-454efa3562ca",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Utiliza esta herramienta únicamente cuando el usuario solicite conocer la cotización actual del dólar oficial, dólar blue o cualquier tipo de cambio disponible. La API devuelve información actualizada en tiempo real. Nunca respondas el precio utilizando memoria del modelo. Si la consulta no está relacionada con cotizaciones de divisas, no utilices esta herramienta.",
+        "url": "https://dolarapi.com/v1/dolares",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        400,
+        96
+      ],
+      "id": "6ccb5d68-7efd-4d13-9c65-e3a998d31aa1",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -208,
+        -128
+      ],
+      "id": "830d1df0-aefb-4f4c-82f4-c14b32da1603",
+      "name": "Chat",
+      "webhookId": "c90f8344-98c5-44c8-8391-741fe6b32889"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5de73106-6c91-4f52-b35c-9d84c05cda3c",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        -128
+      ],
+      "id": "23d674e9-1fbc-4a34-a4da-d7a4769c7b73",
+      "name": "Respuesta"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "xiuqkf1356@minitts.net",
+        "subject": "Consulta Usuario",
+        "message": "====== EJECUCIÓN DEL AGENTE =====\n\nFecha:\n{{ $now }}\n\nUsuario:\n{{ $('Chat').item.json.chatInput }}\n\nRespuesta:\n\n{{ $json.output }}\n\nWorkflow:\n{{ $workflow.name }}\n\nExecution:\n{{ $execution.id }}",
+        "approvalOptions": {
+          "values": {}
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 2,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        -128
+      ],
+      "id": "7518fa0e-24dc-4e1b-83cb-c3efd15b0739",
+      "name": "Envío Aptovación",
+      "webhookId": "b8953c8a-24fb-456b-8bc5-255596f40dfe",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1d8a31ac-5686-4027-9707-be7462bad955",
+              "name": "data.approved",
+              "value": "={{ $json.data.approved }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        -128
+      ],
+      "id": "7e29690e-e9d0-43b7-995b-3df97935822f",
+      "name": "Resultado"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Clasificador de Consulta",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Clasificador de Consulta",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Clasificador de Consulta",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Clasificador de Consulta",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Clasificador de Consulta": {
+      "main": [
+        [
+          {
+            "node": "Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat": {
+      "main": [
+        [
+          {
+            "node": "AI Clasificador de Consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respuesta": {
+      "main": [
+        [
+          {
+            "node": "Envío Aptovación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envío Aptovación": {
+      "main": [
+        [
+          {
+            "node": "Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "906b8412-7cf6-4f78-a48a-8ad3aadf5ee9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5349dfbeee22dea1570d2313368ae1156714c5a6c9e23a17ec56a45677abcdcc"
+  },
+  "id": "g3PpOhpwc2FAgmjn",
+  "tags": []
+}
