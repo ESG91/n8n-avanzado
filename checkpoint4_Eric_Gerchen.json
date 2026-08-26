@@ -1,0 +1,1204 @@
+{
+  "name": "Maestría en el Ecosistema de Herramientas e Integraciones",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Validaciones, en principio para evitar spam o alertas. Luego para identificar clientes con consultas.\n\n\n\n",
+        "height": 384,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1728,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "a8d940bd-1c79-447e-a556-dbbef89c8a20",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "##Para normalizar los datos, requiere un llm, puede hacerse tambien con code para evitar gastos.",
+        "height": 496,
+        "width": 304,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1040,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "10142fdd-8f12-444e-b859-9de5212f54bc",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Luego de buscar en la base de datos lo que proviene del CRM , revisamos si llego algo. Hay otras maneras de hacerlo.",
+        "height": 464,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -496,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "d0c154bf-0f25-4be0-9d52-0eaf5343cd12",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Control, man in the loop.",
+        "height": 784,
+        "width": 544,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "83c8f976-c8de-431c-9949-4689027eb866",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        96
+      ],
+      "id": "3d0bbd87-3b8a-472f-9811-20d88e8c0f0f",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Control de payload: antes de entregar información a cualquier herramienta externa de mensajería, se reduce el objeto a los campos estrictamente necesarios. El patrón queda preparado para una futura integración con Slack/WhatsApp.",
+        "height": 528,
+        "color": "#EEC220"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "53417fde-d68b-4651-99f4-810905b19229",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1232,
+        384
+      ],
+      "id": "612b3559-9c48-4255-9675-0af6999204be",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.snippet }}",
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"nombre\": {\n      \"type\": \"string\",\n      \"description\": \"El nombre y apellido completo de la persona\"\n    },\n    \"mail\": {\n      \"type\": \"string\",\n      \"description\": \"La dirección de correo electrónico\"\n    },\n    \"compra\": {\n      \"type\": \"string\",\n      \"description\": \"El artículo o dispositivo que fue adquirido\"\n    },\n    \"pago\": {\n      \"type\": \"number\",\n      \"description\": \"El monto total abonado por la compra. Extraer solo el número\"\n    },\n    \"consulta\": {\n      \"type\": \"string\",\n      \"description\": \"El motivo, queja, reclamo o duda expresada por el usuario\"\n    }\n  },\n  \"required\": [\"nombre\", \"mail\", \"compra\", \"pago\", \"consulta\"]\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -1008,
+        192
+      ],
+      "id": "14eac560-f668-4df8-9606-4f77c4caae3b",
+      "name": "🤖 IA - Extraer Datos Cliente",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eafddb0e-e2c2-42bb-a243-2ab8bae58ac7",
+              "name": "snippet",
+              "value": "={{ $json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "ba3cb3f8-92e3-40bf-92e8-2f4759ae764c",
+              "name": "From",
+              "value": "={{ $('🛡️ Control - Anti Auto-Reply').item.json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "1f1e7b57-724a-48cf-9a9e-6c8498aa5109",
+              "name": "Subject",
+              "value": "={{ $('🛡️ Control - Anti Auto-Reply').item.json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "6d444df9-e23e-46be-b350-5b7435a2d47e",
+              "name": "To",
+              "value": "={{ $('🛡️ Control - Anti Auto-Reply').item.json.To }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -1232,
+        192
+      ],
+      "id": "0ef56437-a2f3-4d08-8931-88320cac8e75",
+      "name": "🧹 Normalizar - Email Entrante"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7592bb63-2da4-4100-8a56-5a79b964420e",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "ventas",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "1881ef1c-bb47-4d90-923b-29b9c4534fa3",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "compras",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1456,
+        288
+      ],
+      "id": "d583fe42-8199-4e28-af5e-ffde14ee42c9",
+      "name": "🔎 Filtro - Tipo de Consulta"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "958c7470-43e1-422b-9a84-49d3a4daec27",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "Auto-reply",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "6b2c211e-9e75-4319-8ac2-d40be3def228",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "\"Out of office\"",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "bc9f3ebc-5033-4e2a-ac0e-011227d13b6b",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "no-reply@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "46298cf7-ece7-4ebc-af6d-7e29ae01c97f",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "=noreply@",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1680,
+        192
+      ],
+      "id": "adc64bf9-86c7-4e87-b3f5-496253fe741f",
+      "name": "🛡️ Control - Anti Auto-Reply"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "maxResults": 1,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1904,
+        192
+      ],
+      "id": "70f6ef66-e530-434a-8ddf-fc45161ff3b5",
+      "name": "📩 Entrada - Gmail",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "groq/compound-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        432
+      ],
+      "id": "2b83882b-19a1-4ba1-80d1-c4bbd5314f7e",
+      "name": "🧠 LLM - Groq",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appiRatGICfU3feif",
+          "mode": "list",
+          "cachedResultName": "Clientes",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblcUsW2yg6ZuRfDF",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif/tblcUsW2yg6ZuRfDF"
+        },
+        "filterByFormula": "={EMAIL} = \"{{ $json.output.mail }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -656,
+        192
+      ],
+      "id": "8ea63d05-3baf-4293-a2b7-3b0ec58d5854",
+      "name": "🔍 CRM - Buscar Cliente",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "F5rLJlnos6mQK9nK",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "fields.Email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -432,
+        192
+      ],
+      "id": "695846f1-f7fd-4acf-acf3-0940d5eca0ea",
+      "name": "📊 Validar - Cliente Encontrado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1bd5616e-77e0-4c7e-bad3-2d79f56abf5e",
+              "leftValue": "={{ $json.count_fields_Email }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        192
+      ],
+      "id": "c6425636-2ea7-42cc-bb85-30aacb4fa4dd",
+      "name": "🔀 Decisión - Cliente Existe"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appiRatGICfU3feif",
+          "mode": "list",
+          "cachedResultName": "Clientes",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblcUsW2yg6ZuRfDF",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif/tblcUsW2yg6ZuRfDF"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": true,
+            "Pago": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.pago }}",
+            "Email": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.mail }}",
+            "Nombre": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.nombre }}",
+            "Producto": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.compra }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Producto",
+              "displayName": "Producto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pago",
+              "displayName": "Pago",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha Carga",
+              "displayName": "Fecha Carga",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha Modificación",
+              "displayName": "Fecha Modificación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        288
+      ],
+      "id": "bbc31048-4964-4417-91c0-3d46626231bc",
+      "name": "➕ CRM - Crear Cliente",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "F5rLJlnos6mQK9nK",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appiRatGICfU3feif",
+          "mode": "list",
+          "cachedResultName": "Clientes",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblcUsW2yg6ZuRfDF",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appiRatGICfU3feif/tblcUsW2yg6ZuRfDF"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": true,
+            "Email": "={{ $('🔍 CRM - Buscar Cliente').item.json.fields.Email }}",
+            "Nombre": "={{ $('🔍 CRM - Buscar Cliente').item.json.fields.Nombre }}",
+            "Producto": "={{ $('🔍 CRM - Buscar Cliente').item.json.fields.Producto }}",
+            "Pago": "={{ $('🔍 CRM - Buscar Cliente').item.json.fields.Pago }}",
+            "id": "={{ $('🔍 CRM - Buscar Cliente').item.json.id }}",
+            "Fecha Modificación": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Producto",
+              "displayName": "Producto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pago",
+              "displayName": "Pago",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha Carga",
+              "displayName": "Fecha Carga",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha Modificación",
+              "displayName": "Fecha Modificación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        96
+      ],
+      "id": "ac38f133-d33a-4878-a732-067d7572b65c",
+      "name": "✏️ CRM - Actualizar Cliente",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "F5rLJlnos6mQK9nK",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e446fa9b-921d-4667-9233-0ec1c6845cfc",
+              "name": "EMAIL",
+              "value": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.mail }}",
+              "type": "string"
+            },
+            {
+              "id": "b0fcc9da-bad1-457f-a3fa-f7574215794f",
+              "name": "NOMBRE",
+              "value": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.nombre }}",
+              "type": "string"
+            },
+            {
+              "id": "547155d7-eac9-4d1e-8c37-76abe587099a",
+              "name": "PRODUCTO",
+              "value": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.compra }}",
+              "type": "string"
+            },
+            {
+              "id": "34eec723-da8f-4eec-96de-a5ed7496f9ea",
+              "name": "PAGO",
+              "value": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.pago }}",
+              "type": "string"
+            },
+            {
+              "id": "50f1fec6-e9bf-4088-a657-f9b6f039ea5e",
+              "name": "ESTADO",
+              "value": "={{ $if($(\"➕ CRM - Crear Cliente\").isExecuted, $(\"➕ CRM - Crear Cliente\").item.json.fields?.Estado, $(\"✏️ CRM - Actualizar Cliente\").item.json.fields?.Estado) }}",
+              "type": "string"
+            },
+            {
+              "id": "32b728df-2482-4d02-9835-810ad71d4115",
+              "name": "CONSULTA",
+              "value": "={{ $('🤖 IA - Extraer Datos Cliente').item.json.output.consulta }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        240,
+        192
+      ],
+      "id": "22630820-e44f-4c48-946d-1eda5c1e84c9",
+      "name": "📦 Preparar - Datos para Agente"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analizá la siguiente consulta recibida desde el correo de un cliente:\n\n- Nombre del cliente: {{ $json.NOMBRE }}\n- Email: {{ $json.EMAIL }}\n- Producto adquirido: {{ $json.PRODUCTO }}\n- Monto abonado: ${{ $('📦 Preparar - Datos para Agente').item.json.PAGO }}\n- Consulta, reclamo o solicitud: {{ $json.CONSULTA }}\n\nUtilizá esta información como contexto para analizar el caso y determinar la respuesta o acción que corresponda según las instrucciones del sistema.",
+        "options": {
+          "systemMessage": "# Rol\n\nSos un agente autónomo de ventas y soporte. Recibís información proveniente de correos electrónicos y debés analizar el campo `consultas` para determinar qué acción corresponde.\n\n## Datos disponibles\n\nEl input puede contener:\n\n* `nombre`: nombre del cliente.\n* `compra`: producto o servicio adquirido.\n* `precio`: precio de la compra.\n* `consultas`: consulta, solicitud o problema informado por el cliente.\n* `email`: dirección de correo del cliente.\n\n## Reglas de decisión\n\n### 1. Consulta o problema general\n\nSi el campo `consultas` contiene una pregunta, pedido de información, reclamo o problema que **NO implique solicitar una devolución de dinero**, debés:\n\n1. Analizar la consulta.\n2. Generar una respuesta clara y profesional.\n3. Utilizar la herramienta **Gmail Draft** para crear un borrador de respuesta.\n4. No enviar el correo directamente.\n5. El borrador debe dirigirse al cliente indicado en `email`.\n6. Utilizar únicamente información disponible en los datos recibidos. No inventar precios, políticas, pedidos ni información del cliente.\n\n### 2. Solicitud de devolución de dinero\n\nSi el campo `consultas` indica que el cliente solicita una devolución, reembolso, reintegro o devolución del dinero:\n\n1. Identificar que se trata de una solicitud de devolución.\n2. Utilizar la herramienta de **Gmail Human-in-the-Loop** para preparar la respuesta al cliente.\n3. La acción debe quedar pendiente de aprobación humana antes de enviarse.\n4. Una vez realizada/aprobada la acción correspondiente, registrar la solicitud en **Table Store**.\n5. En Table Store guardar como mínimo:\n\n   * `nombre`\n   * `email`\n   * `precio`\n   * `consultas`\n que corresponda según el resultado de la aprobación.\n\n## Regla de seguridad\n\nNunca envíes un correo de devolución directamente sin utilizar el mecanismo de Human-in-the-Loop.\n\nSi falta información necesaria, no inventes datos. Utilizá únicamente la información disponible y, cuando sea necesario, solicitá la información faltante.\n\n## Prioridad\n\nSi una consulta contiene simultáneamente una pregunta y una solicitud de devolución, clasificá el caso como **devolución**.\n\nTu objetivo es decidir autónomamente qué herramienta utilizar según el contenido de `consultas`, respetando siempre las reglas anteriores.\n",
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        848,
+        192
+      ],
+      "id": "decfbeea-ede0-40c0-9f21-1fb422af2810",
+      "name": "🤖 Agente IA - Soporte"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "29a408e8-c8ce-4a8b-aeab-be3190067604",
+              "name": "EMAIL",
+              "value": "={{ $json.EMAIL }}",
+              "type": "string"
+            },
+            {
+              "id": "5b55491f-adfb-4ace-87a3-fa03e9565b4c",
+              "name": "NOMBRE",
+              "value": "={{ $json.NOMBRE }}",
+              "type": "string"
+            },
+            {
+              "id": "9b6c3f5a-6d55-470f-932e-bf9dece25a7b",
+              "name": "PRODUCTO",
+              "value": "={{ $json.PRODUCTO }}",
+              "type": "string"
+            },
+            {
+              "id": "69265698-f8de-4beb-92d5-0c6eaa686c73",
+              "name": "CONSULTA",
+              "value": "={{ $json.CONSULTA }}",
+              "type": "string"
+            },
+            {
+              "id": "6f9b2ca1-b895-40fd-9f66-8c1e6f5de205",
+              "name": "ESTADO",
+              "value": "={{ $json.ESTADO }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        464,
+        192
+      ],
+      "id": "43827917-904c-474f-8418-d2abb2795941",
+      "name": "Control- Payload para notificación"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.6-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        432
+      ],
+      "id": "59353105-926d-48ff-9613-74e89d785aea",
+      "name": "🧠 LLM - Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=sessionId"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        832,
+        432
+      ],
+      "id": "fc0ee6e3-010c-4de1-92a5-5f478f702078",
+      "name": "💾 Memoria - Contexto Conversacional"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Respuesta",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        432
+      ],
+      "id": "b70613a0-9b52-4a98-b62e-5c84c2c19afb",
+      "name": "📝 Gmail - Crear Borrador",
+      "webhookId": "ff13c70b-ac04-4d1f-beb3-4f089b7ccae5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "message": "=Tenes una aprobacion pendiente...",
+        "sendTo": "pnqcfj5404@minitts.net",
+        "subject": "Aprobar devolucion",
+        "approvalOptions": {
+          "values": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailHitlTool",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        432
+      ],
+      "id": "f4c57e77-4a6f-4ec9-bfbf-e9e505e7dcc7",
+      "name": "✋ HITL - Aprobación Humana",
+      "webhookId": "04bf2ebd-0e01-4001-b5a9-8d91dfab66c1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "SPmJTVAaFvEiuX9M",
+          "mode": "list",
+          "cachedResultName": "Consultas",
+          "cachedResultUrl": "/projects/YSFqacsyWDTv6l6t/datatables/SPmJTVAaFvEiuX9M"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ESTADO": "={{ $json.ESTADO }}",
+            "EMAIL": "={{ $json.EMAIL }}",
+            "NOMBRE": "={{ $json.NOMBRE }}",
+            "PRODUCTO": "={{ $json.PRODUCTO }}",
+            "PAGO": "={{ $json.PAGO}}",
+            "CONSULTA": "={{ $json.CONSULTA }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "EMAIL",
+              "displayName": "EMAIL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "NOMBRE",
+              "displayName": "NOMBRE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PRODUCTO",
+              "displayName": "PRODUCTO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "PAGO",
+              "displayName": "PAGO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ESTADO",
+              "displayName": "ESTADO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "CONSULTA",
+              "displayName": "CONSULTA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        640
+      ],
+      "id": "b3a722c5-58c6-4999-92f1-75ef01ef0b15",
+      "name": "💾 Registrar - Solicitud de Devolución"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🤖 IA - Extraer Datos Cliente": {
+      "main": [
+        [
+          {
+            "node": "🔍 CRM - Buscar Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧹 Normalizar - Email Entrante": {
+      "main": [
+        [
+          {
+            "node": "🤖 IA - Extraer Datos Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔎 Filtro - Tipo de Consulta": {
+      "main": [
+        [
+          {
+            "node": "🧹 Normalizar - Email Entrante",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🛡️ Control - Anti Auto-Reply": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔎 Filtro - Tipo de Consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📩 Entrada - Gmail": {
+      "main": [
+        [
+          {
+            "node": "🛡️ Control - Anti Auto-Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 LLM - Groq": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🤖 IA - Extraer Datos Cliente",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 CRM - Buscar Cliente": {
+      "main": [
+        [
+          {
+            "node": "📊 Validar - Cliente Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Validar - Cliente Encontrado": {
+      "main": [
+        [
+          {
+            "node": "🔀 Decisión - Cliente Existe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Decisión - Cliente Existe": {
+      "main": [
+        [
+          {
+            "node": "✏️ CRM - Actualizar Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "➕ CRM - Crear Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "➕ CRM - Crear Cliente": {
+      "main": [
+        [
+          {
+            "node": "📦 Preparar - Datos para Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✏️ CRM - Actualizar Cliente": {
+      "main": [
+        [
+          {
+            "node": "📦 Preparar - Datos para Agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📦 Preparar - Datos para Agente": {
+      "main": [
+        [
+          {
+            "node": "Control- Payload para notificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Control- Payload para notificación": {
+      "main": [
+        [
+          {
+            "node": "🤖 Agente IA - Soporte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 LLM - Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🤖 Agente IA - Soporte",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 Memoria - Contexto Conversacional": {
+      "ai_memory": [
+        [
+          {
+            "node": "🤖 Agente IA - Soporte",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Gmail - Crear Borrador": {
+      "ai_tool": [
+        [
+          {
+            "node": "🤖 Agente IA - Soporte",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✋ HITL - Aprobación Humana": {
+      "ai_tool": [
+        [
+          {
+            "node": "🤖 Agente IA - Soporte",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💾 Registrar - Solicitud de Devolución": {
+      "ai_tool": [
+        [
+          {
+            "node": "✋ HITL - Aprobación Humana",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "36a3acfd-1059-41b7-925d-90d9ed0c84bf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5349dfbeee22dea1570d2313368ae1156714c5a6c9e23a17ec56a45677abcdcc"
+  },
+  "nodeGroups": [],
+  "id": "lEzMRG9Vplqja7u5",
+  "tags": []
+}
