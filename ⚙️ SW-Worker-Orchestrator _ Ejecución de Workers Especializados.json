@@ -1,0 +1,817 @@
+{
+  "name": "⚙️ SW-Worker-Orchestrator | Ejecución de Workers Especializados",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -912,
+        -208
+      ],
+      "id": "c57fa87a-c0a7-4c45-adbd-6922ee7bd2a9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -208
+      ],
+      "id": "4bb98acb-72fa-4bc8-b861-065c58b6a2d6",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        192
+      ],
+      "id": "9eac3345-4cdc-4dad-81a9-1525271007be",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -912,
+        192
+      ],
+      "id": "9fe51448-194f-4750-94d2-e07bac0cae11",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        768
+      ],
+      "id": "3850e3fc-43f8-4cc5-8803-082c361e47bd",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -896,
+        768
+      ],
+      "id": "6528e1f8-26f2-414c-9f4f-6b0d9514092c",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"nombre\": \"...\",\n  \"consulta\": \"...\",\n  \"worker\": \"...\",\n  \"traceId\": \"...\",\n  \"intentos_correccion\": 0\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1584,
+        224
+      ],
+      "id": "da828d3a-4bfd-4ff4-a1e7-f6699d4798a3",
+      "name": "📥 IN - Solicitud del Manager"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "65f5d7f2-27e1-4e41-ba1b-c9ebed5929f2",
+              "name": "consulta",
+              "value": "={{$json.consulta}}",
+              "type": "string"
+            },
+            {
+              "id": "2b0427c1-3fe1-4701-b31d-e2d5636d276f",
+              "name": "nombre",
+              "value": "={{$json.nombre}}",
+              "type": "string"
+            },
+            {
+              "id": "1ca98a50-5600-444c-9bf8-979885c6a7f0",
+              "name": "intentos",
+              "value": "={{$json.intentos_correccion}}",
+              "type": "number"
+            },
+            {
+              "id": "4c755979-dd5f-41f7-9e43-4010b04d2d02",
+              "name": "max_intentos",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "2c70a404-c369-4305-b9f1-c818a8168fa9",
+              "name": "worker",
+              "value": "={{$json.worker}}",
+              "type": "string"
+            },
+            {
+              "id": "511ea01b-c393-40f9-99ba-324bd3050148",
+              "name": "traceId",
+              "value": "={{$json.traceId}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -1360,
+        224
+      ],
+      "id": "a05897ae-3c4d-41df-9d78-980dc7889e33",
+      "name": "📋 Preparar Contexto Worker"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.worker}}",
+                    "rightValue": "TECNOLOGIA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d8872f82-cc7b-4d50-b655-4ae405d0ab2b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "TECNOLOGIA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a84298aa-0c97-486e-bc8d-2c140a753ab9",
+                    "leftValue": "={{$json.worker}}",
+                    "rightValue": "VENTAS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "VENTAS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7f5c546b-ad3d-41c7-8234-dd54cad92871",
+                    "leftValue": "={{$json.worker}}",
+                    "rightValue": "INFORMACION_LOCAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "INFORMACION_LOCAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "21bab040-1c35-4260-ac58-d98b5bc1ab7f",
+                    "leftValue": "={{$json.worker}}",
+                    "rightValue": "OTROS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "OTROS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1152,
+        192
+      ],
+      "id": "a85e25ee-d1fc-49a6-bb69-575564ef9432",
+      "name": "🚦 Selección de Worker"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Usando el nombre dado y su consulta.\nNombre:  {{$json.nombre}}\nconsulta: {{$json.consulta}}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=Actúa como un consultor senior de tecnología y seguridad informática.\n\nTu respuesta será evaluada posteriormente por un sistema de control de calidad factual, por lo que debes maximizar la precisión técnica y minimizar cualquier riesgo de alucinación.\n\nInstrucciones:\n- Responde únicamente con información verificable.\n- Si existen varias respuestas posibles, proporciona la más aceptada por la industria.\n- Mantén coherencia técnica y conceptual.\n- Sé breve, claro y directo.\n- No repitas la pregunta.\n- No incluyas relleno ni texto innecesario.\n\nObjetivo: obtener la máxima puntuación de exactitud factual.\n\nMáximo 8 palabras."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        -432
+      ],
+      "id": "e09153f4-710f-41f5-a5d5-2fd20c2b78fb",
+      "name": "💻 Worker IA - Tecnología",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"respuesta\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"respuesta\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -528,
+        -208
+      ],
+      "id": "bdcf5eed-22ff-472b-b4ab-4f97c197e54c",
+      "name": "📄 Parser - Respuesta Tecnología"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=SessionId"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -656,
+        -208
+      ],
+      "id": "a9afa289-4457-4d4c-b5c2-2601362da003",
+      "name": "🧠 Memoria - Tecnología"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Usando el nombre dado y su consulta.\nNombre:  {{$json.nombre}}\nconsulta: {{$json.consulta}}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=Actúa como un asesor comercial especializado en productos y servicios tecnológicos.\n\nTu respuesta será evaluada posteriormente por un sistema de control de calidad factual, por lo que debes maximizar la precisión y evitar cualquier información comercial no verificable.\n\nInstrucciones:\n- Responde únicamente con información verificable.\n- No inventes precios, promociones ni disponibilidad.\n- Si no dispones de información real sobre precios o stock, indícalo claramente.\n- Orienta al cliente de forma profesional.\n- Recomienda solicitar una cotización formal cuando corresponda.\n- Sé breve, claro y directo.\n- No repitas la pregunta.\n- No incluyas relleno ni texto innecesario.\n\nObjetivo: proporcionar asesoramiento comercial confiable y preciso.\n\nMáximo 70 palabras."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        -32
+      ],
+      "id": "04efc4a1-5d37-484d-959f-ec220ee56418",
+      "name": "💰 Worker IA - Ventas",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"respuesta\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"respuesta\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -528,
+        192
+      ],
+      "id": "aeb58ac4-5d76-467e-8e89-c94d65a29bad",
+      "name": "📄 Parser - Respuesta Ventas"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=SessionId"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -656,
+        192
+      ],
+      "id": "9753576d-c14c-4dbe-8b87-e8ce8ff79170",
+      "name": "🧠 Memoria - Ventas"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Usando el nombre dado y su consulta.\nNombre:  {{$json.nombre}}\nconsulta: {{$json.consulta}}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=Actúa como un asistente de atención al cliente especializado en información institucional de la empresa.\n\nDispones de la siguiente información:\n\nEmpresa:\nTech Solutions SRL\n\nDirección:\nAv. Tecnológica 1234\n\nLocalidad:\nBuenos Aires\n\nTeléfono:\n+54 11 5555-1234\n\nCorreo electrónico:\ncontacto@techsolutions.com\n\nSitio web:\nwww.techsolutions.com\n\nHorarios de atención:\nLunes a Viernes de 09:00 a 18:00\n\nSucursales:\nBuenos Aires\nRosario\nCórdoba\n\nTu respuesta será evaluada posteriormente por un sistema de control de calidad factual.\n\nInstrucciones:\n- Responde únicamente utilizando la información proporcionada.\n- No inventes nuevos datos.\n- Si la consulta solicita información no incluida en la base de conocimiento, indícalo claramente.\n- Sé breve, claro y directo.\n- No repitas la pregunta.\n- No incluyas relleno ni texto innecesario.\n\nObjetivo: proporcionar información institucional precisa y consistente.\n\nMáximo 70 palabras."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -800,
+        544
+      ],
+      "id": "7a5ed3ff-25a3-4836-bba4-52d1f55fb907",
+      "name": "🏢 Worker IA - Información Local",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"respuesta\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"respuesta\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        768
+      ],
+      "id": "deda8c28-228e-4159-bb28-b2bda05dbe12",
+      "name": "📄 Parser - Respuesta Institucional"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=SessionId"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -640,
+        768
+      ],
+      "id": "9e55ad7b-91df-440c-b344-a04573409cfd",
+      "name": "🧠 Memoria - Información Local"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"output.respuesta\": \"La consulta realizada se encuentra fuera del alcance de los servicios tecnológicos y comerciales ofrecidos por la organización.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -736,
+        368
+      ],
+      "id": "ab7440f4-f84c-4f2e-be5c-901c9702493f",
+      "name": "❓ Worker - Fuera de Alcance"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4321c6b2-e2f8-4d70-af62-3396877110d6",
+              "name": "consulta",
+              "value": "={{ $('📋 Preparar Contexto Worker').item.json.consulta }}",
+              "type": "string"
+            },
+            {
+              "id": "0ac4a3ac-988f-4010-ae9e-94aaa8921470",
+              "name": "respuesta_a_evaluar",
+              "value": "={{ $json.output.respuesta }}",
+              "type": "string"
+            },
+            {
+              "id": "8034b34f-e140-455a-8b07-98f4521c452b",
+              "name": "intentos_correccion",
+              "value": "={{ $('📋 Preparar Contexto Worker').item.json.intentos }}",
+              "type": "number"
+            },
+            {
+              "id": "28487bf7-c054-4a19-80b7-a9fd3fcab66a",
+              "name": "traceId",
+              "value": "={{ $('📋 Preparar Contexto Worker').item.json.traceId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -240,
+        224
+      ],
+      "id": "98068814-eb7e-417c-8212-2784572171f1",
+      "name": "📤 OUT - Respuesta Unificada"
+    },
+    {
+      "parameters": {
+        "content": "# 📥 Recepción desde Manager IA\nRecibe la clasificación realizada\npor el Manager IA.\n\nInformación recibida:\n\n📝 Consulta\n👤 Usuario\n🆔 TraceId\n🏷️ Worker asignado\n\nObjetivo:\nDerivar correctamente la consulta.",
+        "height": 368,
+        "width": 448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1584,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "49b50eed-fb6a-4e37-b157-3849ac4058c6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 🚦 Selección Inteligente\nDetermina qué Worker\ndebe procesar la consulta.\n\n💻 Tecnología\n💰 Ventas\n🏢 Información Local\n❓ Otros\n\nImplementa el patrón\nManager → Worker.",
+        "height": 368,
+        "width": 224,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1216,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "704344d6-588b-4ae5-bbb7-fde9e379201a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 🤖 Workers Especializados\nLos Workers generan la respuesta\nutilizando conocimiento específico\nde cada dominio funcional.\n\n💻 TECNOLOGÍA\n• Tecnología e Informática\n• Bases de Datos\n• Cloud y Seguridad\n• Inteligencia Artificial\n\n💰 VENTAS\n• Productos y Servicios\n• Cotizaciones\n• Licencias\n• Asesoramiento Comercial\n\n🏢 INFORMACIÓN LOCAL\n• Dirección\n• Horarios\n• Contacto\n• Sucursales\n\n❓ OTROS\n• Consultas fuera del alcance\n• Respuesta controlada y segura\n\nObjetivo:\nProporcionar respuestas\nespecializadas según la intención\ndetectada por el Manager IA.",
+        "height": 656,
+        "width": 304,
+        "color": "#35C04C"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        -448
+      ],
+      "typeVersion": 1,
+      "id": "279bfacd-9418-46e0-a6f3-50072f003304",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 📤 Respuesta Estandarizada\nTodos los Workers devuelven:\n\n🏷️ Worker\n📝 Consulta\n💬 Respuesta\n🆔 TraceId\n\nPermite integrar fácilmente\nel proceso de QA.",
+        "height": 288,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "4eea7b1a-cc32-4f67-9d35-4182169b5024",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "💻 Worker IA - Tecnología",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "💻 Worker IA - Tecnología",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "💰 Worker IA - Ventas",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "💰 Worker IA - Ventas",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🏢 Worker IA - Información Local",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🏢 Worker IA - Información Local",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📥 IN - Solicitud del Manager": {
+      "main": [
+        [
+          {
+            "node": "📋 Preparar Contexto Worker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Preparar Contexto Worker": {
+      "main": [
+        [
+          {
+            "node": "🚦 Selección de Worker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚦 Selección de Worker": {
+      "main": [
+        [
+          {
+            "node": "💻 Worker IA - Tecnología",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "💰 Worker IA - Ventas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🏢 Worker IA - Información Local",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "❓ Worker - Fuera de Alcance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💻 Worker IA - Tecnología": {
+      "main": [
+        [
+          {
+            "node": "📤 OUT - Respuesta Unificada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 Parser - Respuesta Tecnología": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "💻 Worker IA - Tecnología",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Memoria - Tecnología": {
+      "ai_memory": [
+        [
+          {
+            "node": "💻 Worker IA - Tecnología",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💰 Worker IA - Ventas": {
+      "main": [
+        [
+          {
+            "node": "📤 OUT - Respuesta Unificada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 Parser - Respuesta Ventas": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "💰 Worker IA - Ventas",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Memoria - Ventas": {
+      "ai_memory": [
+        [
+          {
+            "node": "💰 Worker IA - Ventas",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏢 Worker IA - Información Local": {
+      "main": [
+        [
+          {
+            "node": "📤 OUT - Respuesta Unificada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📄 Parser - Respuesta Institucional": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "🏢 Worker IA - Información Local",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Memoria - Información Local": {
+      "ai_memory": [
+        [
+          {
+            "node": "🏢 Worker IA - Información Local",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "❓ Worker - Fuera de Alcance": {
+      "main": [
+        [
+          {
+            "node": "📤 OUT - Respuesta Unificada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fade6426-65a7-4c6a-9e33-af1b3a121b3e",
+  "meta": {
+    "instanceId": "5349dfbeee22dea1570d2313368ae1156714c5a6c9e23a17ec56a45677abcdcc"
+  },
+  "nodeGroups": [],
+  "id": "xH0FPivuBjNagkyT",
+  "tags": []
+}

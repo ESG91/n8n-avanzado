@@ -1,0 +1,945 @@
+{
+  "name": "🤖 Plataforma Inteligente de Atención al Cliente Manager-Worker + QA + Human-in-the-Loop",
+  "nodes": [
+    {
+      "parameters": {
+        "sendTo": "ppcdlc8047@betterr.org",
+        "subject": "🔎 Revisión Humana Requerida - Consulta IA",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n</head>\n<body style=\"font-family:Segoe UI, Arial, sans-serif; background-color:#f4f6f9; margin:0; padding:20px;\">\n\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:800px; margin:auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);\">\n\n    <tr>\n      <td style=\"background:#d83b01; padding:20px;\">\n        <h1 style=\"color:white; margin:0;\">\n          🔎 Revisión Humana Requerida\n        </h1>\n      </td>\n    </tr>\n\n    <tr>\n      <td style=\"padding:25px;\">\n\n        <p style=\"font-size:15px; color:#333;\">\n          Se ha detectado una consulta que requiere validación humana antes de entregar una respuesta definitiva al usuario.\n        </p>\n\n        <table width=\"100%\" style=\"border-collapse:collapse; margin-top:20px;\">\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Estado</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              <span style=\"background:#fff4ce; color:#8a6d3b; padding:5px 10px; border-radius:15px;\">\n                REVISION_HUMANA\n              </span>\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Score QA</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              {{ $json.score }}/5\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Intentos de Corrección</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              {{ $json.intentos_correccion }}\n            </td>\n          </tr>\n        </table>\n\n        <h3 style=\"color:#0078D4; margin-top:30px;\">\n          📝 Consulta del Usuario\n        </h3>\n\n        <div style=\"background:#f8f9fa; border-left:4px solid #0078D4; padding:15px;\">\n          {{ $('🆔 Inicializar Contexto y TraceId').item.json.Consulta }}\n        </div>\n\n        <h3 style=\"color:#107C10; margin-top:30px;\">\n          🤖 Respuesta Generada por la IA\n        </h3>\n\n        <div style=\"background:#f8f9fa; border-left:4px solid #107C10; padding:15px;\">\n          {{ $json.respuesta_final }}\n        </div>\n\n        <h3 style=\"color:#d83b01; margin-top:30px;\">\n          ⚠️ Acción Requerida\n        </h3>\n\n        <div style=\"background:#fff4ce; border:1px solid #ffb900; padding:15px; border-radius:6px;\">\n          La Inteligencia Artificial indicó que no dispone de la información necesaria para resolver completamente la solicitud.\n          <br><br>\n          Se requiere la intervención de un analista para:\n          <ul>\n            <li>Validar la consulta.</li>\n            <li>Completar la información faltante.</li>\n            <li>Aprobar o corregir la respuesta antes del envío al usuario.</li>\n          </ul>\n        </div>\n\n      </td>\n    </tr>\n\n    <tr>\n      <td style=\"background:#f3f2f1; padding:15px; text-align:center; font-size:12px; color:#666;\">\n        Workflow QA & Human-in-the-Loop | Generado automáticamente por n8n\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>\n\n<p style=\"font-size:12px;color:#666;\">\nID de Seguimiento: {{ $('🆔 Inicializar Contexto y TraceId').item.json.TraceId }}\n</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -96
+      ],
+      "id": "c56c8706-7f0d-434a-bf3d-746bd749aba2",
+      "name": "🔎 Revisión Humana Requerida - Consulta IA",
+      "webhookId": "82bb4c09-7197-4d19-b140-5f5420758800",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.json.Email }}",
+        "subject": "✅ Respuesta a su Consulta",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n</head>\n\n<body style=\"font-family:Segoe UI, Arial, sans-serif; background-color:#f4f6f9; margin:0; padding:20px;\">\n\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:800px; margin:auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);\">\n\n<tr>\n<td style=\"background:#107C10; padding:20px;\">\n<h1 style=\"color:white; margin:0;\">\n✅ Respuesta a su Consulta\n</h1>\n</td>\n</tr>\n\n<tr>\n<td style=\"padding:25px;\">\n\n<p style=\"font-size:15px; color:#333;\">\nHola <strong>{{ $('🆔 Inicializar Contexto y TraceId').item.json.Nombre }}</strong>,\n</p>\n\n<p style=\"font-size:15px; color:#333;\">\nHemos procesado su consulta y le compartimos la información solicitada.\n</p>\n\n<h3 style=\"color:#0078D4; margin-top:30px;\">\n📝 Consulta\n</h3>\n\n<div style=\"background:#f8f9fa; border-left:4px solid #0078D4; padding:15px;\">\n{{ $('🆔 Inicializar Contexto y TraceId').item.json.Consulta }}\n</div>\n\n<h3 style=\"color:#107C10; margin-top:30px;\">\n🤖 Respuesta\n</h3>\n\n<div style=\"background:#f8f9fa; border-left:4px solid #107C10; padding:15px;\">\n{{ $json.respuesta_final }}\n</div>\n\n<p style=\"margin-top:30px; color:#333;\">\nEsperamos que esta información sea de utilidad.\n</p>\n\n<p style=\"color:#333;\">\nSaludos cordiales.\n</p>\n\n</td>\n</tr>\n\n<tr>\n<td style=\"background:#f3f2f1; padding:15px; text-align:center; font-size:12px; color:#666;\">\nServicio de Atención Automatizada\n</td>\n</tr>\n\n</table>\n\n</body>\n</html>\n\n<p style=\"font-size:12px;color:#666;\">\nID de Seguimiento: {{ $('🆔 Inicializar Contexto y TraceId').item.json.TraceId }}\n</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -288
+      ],
+      "id": "7d80a951-ef7c-4917-9bf3-af49f03e53c3",
+      "name": "✅ Respuesta a su Consulta",
+      "webhookId": "5270f8ef-f626-4ec6-ab0a-173f0984aebb",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "{{ $('🆔 Inicializar Contexto y TraceId').item.json.json.Email }}",
+        "subject": "🔎 Revisión Humana Requerida - Consulta IA",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n</head>\n<body style=\"font-family:Segoe UI, Arial, sans-serif; background-color:#f4f6f9; margin:0; padding:20px;\">\n\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:800px; margin:auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);\">\n\n    <tr>\n      <td style=\"background:#d83b01; padding:20px;\">\n        <h1 style=\"color:white; margin:0;\">\n          🔎 Revisión Humana Requerida\n        </h1>\n      </td>\n    </tr>\n\n    <tr>\n      <td style=\"padding:25px;\">\n\n        <p style=\"font-size:15px; color:#333;\">\n          Se ha detectado una consulta que requiere validación humana antes de entregar una respuesta definitiva al usuario.\n        </p>\n\n        <table width=\"100%\" style=\"border-collapse:collapse; margin-top:20px;\">\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Estado</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              <span style=\"background:#fff4ce; color:#8a6d3b; padding:5px 10px; border-radius:15px;\">\n                REVISION_HUMANA\n              </span>\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Score QA</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              {{ $json.score }}/5\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:10px; background:#f8f9fa; border:1px solid #e5e5e5;\">\n              <strong>Intentos de Corrección</strong>\n            </td>\n            <td style=\"padding:10px; border:1px solid #e5e5e5;\">\n              {{ $json.intentos_correccion }}\n            </td>\n          </tr>\n        </table>\n\n        <h3 style=\"color:#0078D4; margin-top:30px;\">\n          📝 Consulta del Usuario\n        </h3>\n\n        <div style=\"background:#f8f9fa; border-left:4px solid #0078D4; padding:15px;\">\n         {{ $('🆔 Inicializar Contexto y TraceId').item.json.Consulta }}\n        </div>\n\n        <h3 style=\"color:#107C10; margin-top:30px;\">\n          🤖 Respuesta Generada por la IA\n        </h3>\n\n        <div style=\"background:#f8f9fa; border-left:4px solid #107C10; padding:15px;\">\n          {{ $json.respuesta_final }}\n        </div>\n\n        <h3 style=\"color:#d83b01; margin-top:30px;\">\n          ⚠️ Acción Requerida\n        </h3>\n\n        <div style=\"background:#fff4ce; border:1px solid #ffb900; padding:15px; border-radius:6px;\">\n          La Inteligencia Artificial indicó que no dispone de la información necesaria para resolver completamente la solicitud.\n          <br><br>\n          Se requiere la intervención de un analista para:\n          <ul>\n            <li>Validar la consulta.</li>\n            <li>Completar la información faltante.</li>\n            <li>Aprobar o corregir la respuesta antes del envío al usuario.</li>\n          </ul>\n        </div>\n\n      </td>\n    </tr>\n\n    <tr>\n      <td style=\"background:#f3f2f1; padding:15px; text-align:center; font-size:12px; color:#666;\">\n        Workflow QA & Human-in-the-Loop | Generado automáticamente por n8n\n      </td>\n    </tr>\n\n  </table>\n\n</body>\n</html>\n\n<p style=\"font-size:12px;color:#666;\">\nID de Seguimiento: {{ $('🆔 Inicializar Contexto y TraceId').item.json.TraceId }}\n</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        96
+      ],
+      "id": "5aa68fdd-7d82-443f-b86a-81f6eaed07a5",
+      "name": "🚨 Máximo de Intentos Alcanzado",
+      "webhookId": "82bb4c09-7197-4d19-b140-5f5420758800",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0COVhIHozh8p5oU1",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        144
+      ],
+      "id": "566c82af-f798-42df-a43b-1fb3c5ee1354",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"worker\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"TECNOLOGIA\",\n        \"VENTAS\",\n        \"INFORMACION_LOCAL\",\n        \"OTROS\"\n      ]\n    }\n  },\n  \"required\": [\n    \"worker\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        144
+      ],
+      "id": "2b5ec1dc-34e7-4d65-b9ce-5441b74c9cf4",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        144
+      ],
+      "id": "f9e4d64f-13e6-48b4-a868-b23474e2c99c",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "RecibeConsulta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1392,
+        -96
+      ],
+      "id": "585380c3-3064-43e6-a5ec-65f089a90420",
+      "name": "🌐 IN - Webhook Consulta",
+      "webhookId": "88c955e5-f6be-46c0-a02c-f22c894be1dd"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tomar SOLO la última fila\nconst rows = items; // todas las filas que trae el trigger\nconst lastRow = rows[rows.length - 1]; // última fila\n\nreturn [{ json: lastRow }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1168,
+        -96
+      ],
+      "id": "6c6d9678-1c91-4da6-92e0-780bb4d603bb",
+      "name": "📋 Normalizar Datos de Entrada"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5add3534-6d06-44e8-b7db-c444195d9ba5",
+              "name": "Nombre",
+              "value": "={{ $json.json.body.Nombre }}",
+              "type": "string"
+            },
+            {
+              "id": "75b1dbcb-dfe2-47ea-adf4-f4fb82005cfb",
+              "name": "json.Email",
+              "value": "={{ $json.json.body.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "bf0071fc-7d53-442a-8d47-2d9c387e369b",
+              "name": "Consulta",
+              "value": "={{ $json.json.body.Consulta }}",
+              "type": "string"
+            },
+            {
+              "id": "95544e44-38ce-44b0-a337-f76a2176b455",
+              "name": "Apellido",
+              "value": "={{ $json.json.body.Apellido }}",
+              "type": "string"
+            },
+            {
+              "id": "6ea87545-631d-4dbe-98e2-8646a9ad019f",
+              "name": "intentos_correccion",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "377eb530-73ba-4750-9786-bb3067ea9177",
+              "name": "TraceId",
+              "value": "={{ $now.toFormat('yyyyMMddHHmmss') + '-' + $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -944,
+        -96
+      ],
+      "id": "ca147fc3-68b4-4431-9083-73cb0ec0355e",
+      "name": "🆔 Inicializar Contexto y TraceId"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: {\n      ...item.json,\n      Nombre: '[NOMBRE_ANONIMIZADO]',\n      Apellido: '[APELLIDO_ANONIMIZADO]',\n      json: {\n        ...item.json.json,\n        Email: '[EMAIL_ANONIMIZADO]'\n      }\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -96
+      ],
+      "id": "832fe554-f2a9-458d-a356-cf02ea23527d",
+      "name": "🔒 Protección de Datos Personales"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analiza la siguiente consulta y determina el Worker adecuado.\n\nConsulta:\n\n{{ $json.Consulta }}\n\nSelecciona únicamente una de las siguientes categorías:\n\n- TECNOLOGIA\n- VENTAS\n- INFORMACION_LOCAL\n- OTROS\n\nDevuelve exclusivamente el formato requerido.\n",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Eres un Manager de Orquestación de Agentes.\n\nTu función consiste en analizar la intención principal de cada consulta y asignarla al Worker más adecuado.\n\nNo respondas la consulta.\n\nNo agregues explicaciones.\n\nNo generes información adicional.\n\nDebes interpretar la intención del usuario y seleccionar únicamente una categoría.\n\nCategorías disponibles:\n\nTECNOLOGIA\nConsultas relacionadas con tecnología, informática, software, hardware, bases de datos, datos, infraestructura, cloud, inteligencia artificial, programación, analítica, networking y seguridad informática.\n\nVENTAS\nConsultas relacionadas con precios, cotizaciones, presupuestos, compra de productos o servicios tecnológicos, licencias, contratación y asesoramiento comercial.\n\nINFORMACION_LOCAL\nConsultas relacionadas con horarios de atención, domicilio, teléfonos, correo electrónico, sucursales, ubicación, contacto o información institucional de la empresa.\n\nOTROS\nConsultas que no pertenezcan al dominio tecnológico, comercial o institucional de la empresa.\n\nSi existe duda entre TECNOLOGIA y otra categoría, prioriza TECNOLOGIA.\n\nDevuelve únicamente el resultado definido por el Structured Output Parser."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -432,
+        -96
+      ],
+      "id": "4b09dd91-1e08-4dd1-a748-77c1718d703a",
+      "name": "🧠 Manager IA - Clasificación de Intención",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "xH0FPivuBjNagkyT",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/xH0FPivuBjNagkyT",
+          "cachedResultName": "⚙️ SW-Worker-Orchestrator | Ejecución de Workers Especializados"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "worker": "={{ $json.output.properties.worker.enum[0] }}",
+            "nombre": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.Nombre }}",
+            "consulta": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.Consulta }}",
+            "intentos_correccion": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.intentos_correccion }}",
+            "traceId": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.TraceId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "consulta",
+              "displayName": "consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "worker",
+              "displayName": "worker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "traceId",
+              "displayName": "traceId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "intentos_correccion",
+              "displayName": "intentos_correccion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "143c02bc-005f-4f99-9a0e-79ad07742d1a",
+      "name": "⚙️ SW - Worker Orchestrator"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bBjVW9swlqFdCi9f",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bBjVW9swlqFdCi9f",
+          "cachedResultName": "🔍 SW-QA-Correction | Control de Calidad y Mejora Automática"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "intentos_correccion": "={{ $json.intentos_correccion }}",
+            "consulta": "={{ $json.consulta }}",
+            "respuesta_a_evaluar": "={{ $json.respuesta_a_evaluar }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "consulta",
+              "displayName": "consulta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "respuesta_a_evaluar",
+              "displayName": "respuesta_a_evaluar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "intentos_correccion",
+              "displayName": "intentos_correccion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        -96
+      ],
+      "id": "06e0fc3c-23c8-47dc-a4ac-421713293e01",
+      "name": "🔍 SW - QA & Correction"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "RESPONDIDA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fa57f77e-5a18-4985-b09d-987c068c9986"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "RESPONDIDA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "88427be5-a443-4612-9c93-f0ee110a123d",
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "REVISION_HUMANA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "REVISION_HUMANA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b40c5890-b7dd-48b1-956e-54316ee8553f",
+                    "leftValue": "={{ $json.Estado }}",
+                    "rightValue": "RECHAZADO - Se alcanzó el límite de intentos de corrección",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MAX_INTENTOS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -112
+      ],
+      "id": "e0070b81-744a-4186-a184-476d9582c85a",
+      "name": "🚦 Decisión Final QA"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appFzp7hqMK9HwC5W",
+          "mode": "list",
+          "cachedResultName": "TP Final",
+          "cachedResultUrl": "https://airtable.com/appFzp7hqMK9HwC5W"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblNVbWqRZc7mCuxV",
+          "mode": "list",
+          "cachedResultName": "ConsultaClientes",
+          "cachedResultUrl": "https://airtable.com/appFzp7hqMK9HwC5W/tblNVbWqRZc7mCuxV"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.Nombre }}",
+            "Apellido": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.Apellido }}",
+            "Email": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.json.Email }}",
+            "Consulta": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.Consulta }}",
+            "Respuesta": "={{ $('🚦 Decisión Final QA').item.json.respuesta_final }}",
+            "Puntuación": "={{ $('🔍 SW - QA & Correction').item.json.score }}",
+            "Estado QA": "={{ $('🔍 SW - QA & Correction').item.json.Estado }}",
+            "Intentos Corrección": "={{ $('🚦 Decisión Final QA').item.json.intentos_correccion }}",
+            "FechaCarga": "={{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "TraceId": "={{ $('🆔 Inicializar Contexto y TraceId').item.json.TraceId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Apellido",
+              "displayName": "Apellido",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Consulta",
+              "displayName": "Consulta",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Respuesta",
+              "displayName": "Respuesta",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Puntuación",
+              "displayName": "Puntuación",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estado QA",
+              "displayName": "Estado QA",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intentos Corrección",
+              "displayName": "Intentos Corrección",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "TraceId",
+              "displayName": "TraceId",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "FechaCarga",
+              "displayName": "FechaCarga",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        -96
+      ],
+      "id": "500b0af9-b5f3-44c5-aa62-f70d462b514a",
+      "name": "📊 Auditoría y Trazabilidad",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "F5rLJlnos6mQK9nK",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 🌐 Recepción y Preparación de Solicitudes  \n\n📨 Recepción de consultas mediante Webhook.\n\n🔹 Normalización de datos\n🔹 Generación de TraceId\n🔹 Protección de datos personales\n🔹 Preparación del contexto inicial\n\nObjetivo:\nGarantizar un ingreso seguro y trazable.",
+        "height": 288,
+        "width": 448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1424,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "7d692bc2-d044-4edb-90df-9646964926a5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 🧠 Manager IA \n\nAnaliza la intención principal de la consulta.\n\n📊 TECNOLOGÍA\n💰 VENTAS\n🏢 INFORMACIÓN LOCAL\n❓ OTROS\n\nSelecciona el Worker más adecuado\npara cada solicitud.",
+        "height": 288,
+        "width": 368,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "68d84727-3f17-4142-8670-4f99f553d420",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# ⚙️ Orquestación de Workers\n\nEl Manager delega la ejecución\nal Worker especializado.\n\n💻 Tecnología\n💰 Ventas\n🏢 Información Local\n❓ Otros\n\nResponsable de generar la respuesta.",
+        "height": 288,
+        "width": 320,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        -400
+      ],
+      "typeVersion": 1,
+      "id": "45a382a8-9758-4c1b-8a0f-a146ebf1cf8b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 🔍 Control de Calidad IA\n\nEvaluación automática de la respuesta.\n\n✅ Exactitud factual\n✅ Claridad\n✅ Completitud\n✅ Utilidad\n\nIncluye corrección automática\ncuando es necesario.",
+        "height": 288,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "04198833-b6b8-425f-8ed4-353091d084b1",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# 👨‍💼 Human in the Loop\n\nCasos que requieren validación humana.\n\n📧 Notificación automática\n📝 Revisión por analista\n✅ Aprobación o corrección\n\nEvita respuestas incorrectas\no información insuficiente.",
+        "height": 288,
+        "width": 256,
+        "color": "#E1E515"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        -448
+      ],
+      "typeVersion": 1,
+      "id": "f56fcf65-66a7-4411-a965-057a733c41b3",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# 📊 Auditoría y Trazabilidad\n\nRegistro de cada ejecución.\n\n🆔 TraceId\n👤 Usuario\n❓ Consulta\n🤖 Respuesta\n📈 Score QA\n📅 Fecha y hora\n\nTrazabilidad completa\nde extremo a extremo.",
+        "height": 272,
+        "width": 320,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        80
+      ],
+      "typeVersion": 1,
+      "id": "d145dfbb-e575-47e1-b90a-a0d225202f7a",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "🔎 Revisión Humana Requerida - Consulta IA": {
+      "main": [
+        [
+          {
+            "node": "📊 Auditoría y Trazabilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Respuesta a su Consulta": {
+      "main": [
+        [
+          {
+            "node": "📊 Auditoría y Trazabilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚨 Máximo de Intentos Alcanzado": {
+      "main": [
+        [
+          {
+            "node": "📊 Auditoría y Trazabilidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 Manager IA - Clasificación de Intención",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "🧠 Manager IA - Clasificación de Intención",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 Manager IA - Clasificación de Intención",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🌐 IN - Webhook Consulta": {
+      "main": [
+        [
+          {
+            "node": "📋 Normalizar Datos de Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Normalizar Datos de Entrada": {
+      "main": [
+        [
+          {
+            "node": "🆔 Inicializar Contexto y TraceId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🆔 Inicializar Contexto y TraceId": {
+      "main": [
+        [
+          {
+            "node": "🔒 Protección de Datos Personales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔒 Protección de Datos Personales": {
+      "main": [
+        [
+          {
+            "node": "🧠 Manager IA - Clasificación de Intención",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Manager IA - Clasificación de Intención": {
+      "main": [
+        [
+          {
+            "node": "⚙️ SW - Worker Orchestrator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⚙️ SW - Worker Orchestrator": {
+      "main": [
+        [
+          {
+            "node": "🔍 SW - QA & Correction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 SW - QA & Correction": {
+      "main": [
+        [
+          {
+            "node": "🚦 Decisión Final QA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚦 Decisión Final QA": {
+      "main": [
+        [
+          {
+            "node": "✅ Respuesta a su Consulta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔎 Revisión Humana Requerida - Consulta IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚨 Máximo de Intentos Alcanzado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Auditoría y Trazabilidad": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "97c8fab4-1130-4c7a-b161-8973a833b129",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5349dfbeee22dea1570d2313368ae1156714c5a6c9e23a17ec56a45677abcdcc"
+  },
+  "nodeGroups": [],
+  "id": "P5SVB6iS87aF7uPD",
+  "tags": []
+}

@@ -1,0 +1,914 @@
+{
+  "name": "🔍 SW-QA-Correction | Control de Calidad y Mejora Automática",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2352,
+        1808
+      ],
+      "id": "a7fd1575-bb2d-4b6f-af49-1c7cc74c824d",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"exactitud_factual\": {\n      \"type\": \"integer\"\n    },\n    \"completitud\": {\n      \"type\": \"integer\"\n    },\n    \"claridad\": {\n      \"type\": \"integer\"\n    },\n    \"utilidad\": {\n      \"type\": \"integer\"\n    },\n    \"estado_veredicto\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"ACEPTADO\",\n        \"CORREGIR\",\n        \"REVISION_HUMANA\"\n      ]\n    },\n    \"feedback\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"exactitud_factual\",\n    \"completitud\",\n    \"claridad\",\n    \"utilidad\",\n    \"estado_veredicto\",\n    \"feedback\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        1520
+      ],
+      "id": "69d59d2b-088a-481d-8880-b550946cc945",
+      "name": "Parser - Veredicto QA"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"respuesta\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"respuesta\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2608,
+        1808
+      ],
+      "id": "6fcf8aa4-c083-481d-a4d6-4959145c8f6f",
+      "name": "Parser - Respuesta Corregida"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        1520
+      ],
+      "id": "c1d52135-6085-41e9-8367-d53f68f06dc7",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5SXsh0fnDYCDM99T",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        1520
+      ],
+      "id": "01c693ae-e6e5-405a-9aa2-9141bc45a0b3",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"consulta\": \"...\",\n  \"respuesta_a_evaluar\": \"...\",\n  \"intentos_correccion\": 0\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        304,
+        1504
+      ],
+      "id": "2670f28b-0c12-4400-85ee-256127ec568d",
+      "name": "📥 IN - Solicitud de Evaluación QA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "65f5d7f2-27e1-4e41-ba1b-c9ebed5929f2",
+              "name": "consulta",
+              "value": "={{$json.consulta}}",
+              "type": "string"
+            },
+            {
+              "id": "2b0427c1-3fe1-4701-b31d-e2d5636d276f",
+              "name": "respuesta_a_evaluar",
+              "value": "={{$json.respuesta_a_evaluar}}",
+              "type": "string"
+            },
+            {
+              "id": "1ca98a50-5600-444c-9bf8-979885c6a7f0",
+              "name": "intentos_correccion",
+              "value": "={{$json.intentos_correccion}}",
+              "type": "number"
+            },
+            {
+              "id": "4c755979-dd5f-41f7-9e43-4010b04d2d02",
+              "name": "max_intentos",
+              "value": 3,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        528,
+        1504
+      ],
+      "id": "7017533f-6b8c-4f72-93ed-89e0e0d550d1",
+      "name": "📋 Preparar Contexto QA"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evalúa la calidad de la respuesta generada por un agente de Inteligencia Artificial.\n\nCONSULTA ORIGINAL:\n\n{{ $json.consulta }}\n\nCONTEXTO RECUPERADO:\n\n{{ $json.contexto_recuperado || \"No se encontró contexto adicional\" }}\n\nRESPUESTA PROPUESTA:\n\n{{ $json.respuesta_a_evaluar }}\n\nAnaliza los siguientes criterios:\n\n1. Exactitud factual\n   - ¿La información es correcta?\n   - ¿Existe alguna afirmación incorrecta o engañosa?\n   - ¿La respuesta contradice el contexto disponible?\n\n2. Completitud\n   - ¿La respuesta cubre adecuadamente la consulta?\n   - ¿Faltan conceptos importantes?\n   - ¿El nivel de detalle es suficiente?\n\n3. Claridad\n   - ¿La respuesta es comprensible?\n   - ¿Está bien estructurada?\n   - ¿Evita ambigüedades innecesarias?\n\n4. Relevancia\n   - ¿La respuesta realmente responde a la consulta?\n   - ¿Contiene información irrelevante?\n\nIMPORTANTE:\n\nLa ausencia de contexto recuperado no implica que la respuesta sea incorrecta.\n \nSi no existe contexto disponible, la evaluación debe realizarse únicamente utilizando la consulta original y la respuesta generada.\n \nNo penalices respuestas provenientes de una base de conocimiento interna aunque dicha información no esté incluida explícitamente en el contexto recuperado.\n\nUna respuesta puede ser factualmente correcta y aun así NO ser útil para resolver la consulta.\n\nEn ese caso NO debe clasificarse como ACEPTADO.\n\nAsignación del veredicto:\n\nACEPTADO\n- Exactitud factual de 4 o 5.\n- Completitud de 4 o 5.\n- Claridad de 4 o 5.\n- Utilidad de 4 o 5.\n- La respuesta puede enviarse directamente al usuario.\n\nCORREGIR\n- Exactitud factual de 2 o 3.\n- La respuesta es parcialmente correcta.\n- La respuesta es demasiado breve.\n- La respuesta es genérica.\n- La respuesta omite información relevante.\n- La respuesta podría mejorarse significativamente.\n- La respuesta es correcta pero insuficiente para responder completamente la consulta.\n\nREVISION_HUMANA\n\nLa respuesta requiere intervención humana cuando ocurre cualquiera de las siguientes situaciones:\n\n- La consulta requiere datos internos, confidenciales o privados a los que el agente no tiene acceso.\n- La consulta requiere información en tiempo real que no está disponible.\n- La respuesta indica explícitamente falta de acceso a los datos necesarios.\n- No es posible satisfacer la necesidad del usuario con la información disponible.\n- La consulta requiere validación humana o acceso a sistemas corporativos.\n- La respuesta es técnicamente correcta pero no puede resolver la solicitud realizada.\n\nReglas especiales:\n\n- Si la respuesta reconoce correctamente que no posee acceso a información privada o corporativa, no debe considerarse un error factual.\n\n- Sin embargo, si la consulta depende de dichos datos para ser respondida, el resultado debe clasificarse como REVISION_HUMANA.\n\n- Si la respuesta es correcta pero insuficiente para satisfacer la necesidad del usuario, clasificar como CORREGIR o REVISION_HUMANA según corresponda.\n\nGenera además un feedback breve indicando los principales motivos del veredicto.\n\nDevuelve exclusivamente la estructura definida por el Structured Output Parser.",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un Supervisor Senior de Control de Calidad para respuestas generadas por Inteligencia Artificial.\n\nTu responsabilidad es evaluar objetivamente la calidad de una respuesta utilizando la consulta original del usuario, el contexto recuperado y la respuesta propuesta por el agente.\n\nDebes comportarte como un auditor técnico independiente.\n\nEvalúa exclusivamente la información proporcionada.\n\nNo respondas al usuario final.\n\nNo generes una nueva respuesta.\n\nNo propongas soluciones alternativas.\n\nNo agregues explicaciones fuera del formato solicitado.\n\nDebes respetar estrictamente la estructura definida por el Structured Output Parser.\n\nTu evaluación debe centrarse en:\n\n- Exactitud factual.\n- Completitud de la respuesta.\n- Claridad y comprensión.\n- Relevancia para la consulta realizada.\n- Utilidad práctica para el usuario.\n\nDebes identificar errores, omisiones importantes, ambigüedades o información insuficiente.\n\nUna respuesta puede ser factualmente correcta y aun así requerir correcciones si es incompleta, poco clara o aporta escaso valor al usuario."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1040,
+        1280
+      ],
+      "id": "8365a3b5-bf13-4344-838b-854c9c5c0424",
+      "name": "🧠 Juez IA - Evaluación de Calidad",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        1808
+      ],
+      "id": "2e065c2c-cfce-4285-917f-213bb14e5b02",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "lx0OicmtAJ21xdwE",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.estado_veredicto }}",
+                    "rightValue": "ACEPTADO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fa57f77e-5a18-4985-b09d-987c068c9986"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ACEPTADO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "88427be5-a443-4612-9c93-f0ee110a123d",
+                    "leftValue": "={{ $json.output.estado_veredicto }}",
+                    "rightValue": "CORREGIR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CORREGIR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b40c5890-b7dd-48b1-956e-54316ee8553f",
+                    "leftValue": "={{ $json.output.estado_veredicto }}",
+                    "rightValue": "REVISION_HUMANA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "REVISION_HUMANA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1664,
+        1264
+      ],
+      "id": "d168750a-6c37-4c19-a5ef-dd517fa1abe4",
+      "name": "🚦 Decisión QA"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "19e9f1c0-c488-4ca2-9de0-0a37f6904900",
+              "leftValue": "={{ Number($json.intentos_correccion || 0) }}",
+              "rightValue": "={{ Number($json.max_intentos || 3) }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1888,
+        1472
+      ],
+      "id": "0a3482c5-3b3f-4cdb-838a-4e9bae4add2b",
+      "name": "🔄 Verificar Intentos Permitidos"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "440ed5a2-d198-4f03-b64e-046234e807e0",
+              "name": "intentos_correccion",
+              "value": "={{ Number($json.intentos_correccion || 0) + 1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2112,
+        1568
+      ],
+      "id": "1fb85939-3081-4a4a-b55a-a6b5854cb389",
+      "name": "➕ Incrementar Contador QA"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Actúa como un especialista encargado de corregir respuestas generadas por Inteligencia Artificial.\n\nConsulta:\n\n{{ $json.consulta }}\n\nRespuesta original:\n\n{{ $json.respuesta_a_evaluar }}\n\nFeedback QA:\n\n{{ $json.output.feedback }}\n\nTu tarea consiste en mejorar la respuesta original utilizando el feedback recibido.\n\nDebes devolver exclusivamente un objeto JSON válido con esta estructura:\n \n{\n\"respuesta\": \"texto de la respuesta corregida\"\n}\n\nDebes:\n\n- Corregir errores identificados.\n- Mejorar claridad y utilidad.\n- Mantener exactitud factual.\n- Responder directamente la consulta.\n- No explicar las correcciones realizadas.\n- No generar puntuaciones.\n- No generar evaluaciones.\n- No generar feedback.\n- No generar veredictos.\n\nDevuelve únicamente una nueva versión mejorada de la respuesta.",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Mejora la respuesta original teniendo en cuenta la consulta del usuario.\n\nCorrige posibles errores factuales, mejora la claridad y responde directamente a la consulta.\n\nNo agregues explicaciones sobre el proceso de corrección."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2400,
+        1568
+      ],
+      "id": "066833f5-79ce-4cc4-9f6e-35a79a5bc443",
+      "name": "🤖 Worker IA - Mejora de Respuesta",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae6c0262-bfac-4575-adcb-5604f7249466",
+              "name": "consulta",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.consulta }}",
+              "type": "string"
+            },
+            {
+              "id": "6d9974d6-681c-491c-93c0-8e59683c9c61",
+              "name": "respuesta_a_evaluar",
+              "value": "={{ $json.output.respuesta }}",
+              "type": "string"
+            },
+            {
+              "id": "1a2689b1-cc95-419d-805f-fb3a4e1338a4",
+              "name": "intentos_correccion",
+              "value": "={{ $('➕ Incrementar Contador QA').item.json.intentos_correccion }}",
+              "type": "number"
+            },
+            {
+              "id": "26d37427-d6cf-4fc9-9282-d5ad3bc2852f",
+              "name": "max_intentos",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.max_intentos }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2800,
+        1696
+      ],
+      "id": "c780398c-74ab-4a4d-a175-16240f4e0592",
+      "name": "✅ Preparar Respuesta Corregida"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fade63a2-7d33-4250-9211-32de8e47d1f6",
+              "name": "Estado",
+              "value": "RESPONDIDA",
+              "type": "string"
+            },
+            {
+              "id": "9884f00d-575f-451b-abd1-2630ddc750fd",
+              "name": "score",
+              "value": "={{ $json.output.exactitud_factual }}",
+              "type": "number"
+            },
+            {
+              "id": "da591a0d-c6b1-4981-bab0-bba384eec6e2",
+              "name": "respuesta_final",
+              "value": "={{ $json.respuesta_a_evaluar }}",
+              "type": "string"
+            },
+            {
+              "id": "fb15d893-95d5-4148-bfde-ea7c2f68f544",
+              "name": "intentos_correccion",
+              "value": "={{ $json.intentos_correccion }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1888,
+        1088
+      ],
+      "id": "1ddbc01b-f627-48d0-b064-509d0df8d457",
+      "name": "✅ OUT - RESPONDIDA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84c19277-4acf-49a5-a6b2-99508e65dbbb",
+              "name": "Estado",
+              "value": "REVISION_HUMANA",
+              "type": "string"
+            },
+            {
+              "id": "75af13c3-244d-4c85-98c0-b1182f8d6184",
+              "name": "score",
+              "value": "={{ $json.output.exactitud_factual }}",
+              "type": "number"
+            },
+            {
+              "id": "43704fcb-a9a9-4248-b42e-e57d54757bc7",
+              "name": "=respuesta_final",
+              "value": "={{ $json.respuesta_a_evaluar }}",
+              "type": "string"
+            },
+            {
+              "id": "1e122a80-e119-4b87-a49a-628fb94c9fed",
+              "name": "intentos_correccion",
+              "value": "={{ $json.intentos_correccion }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1888,
+        1280
+      ],
+      "id": "41b777c0-7e31-41b7-ab4f-08fe81314bc1",
+      "name": "👨‍💼 OUT - REVISION_HUMANA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4a1c849-6cd2-4aea-84b5-594bb12cb166",
+              "name": "Estado",
+              "value": "RECHAZADO - Se alcanzó el límite de intentos de corrección",
+              "type": "string"
+            },
+            {
+              "id": "a7cae246-beaa-4837-b6d4-47460503412b",
+              "name": "score",
+              "value": "={{ $json.output.exactitud_factual }}",
+              "type": "number"
+            },
+            {
+              "id": "3a3e532a-a16b-4beb-aac2-74a60a4e76c2",
+              "name": "motivo",
+              "value": "Máximo de correcciones alcanzado",
+              "type": "string"
+            },
+            {
+              "id": "56d2dff0-1819-4ae4-9fce-f4065f95400d",
+              "name": "respuesta_final",
+              "value": "={{ $json.respuesta_a_evaluar }}",
+              "type": "string"
+            },
+            {
+              "id": "e1d5d779-1cc4-4a49-b23c-23c0666f4a3d",
+              "name": "intentos_correccion",
+              "value": "={{ $json.intentos_correccion }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2112,
+        1376
+      ],
+      "id": "321927be-efa5-4aba-bded-2ca339688195",
+      "name": "🚨 OUT - MAX_INTENTOS"
+    },
+    {
+      "parameters": {
+        "content": "# 📥 Recepción de Evaluación  \n\nEl subworkflow recibe:\n\n📝 Consulta\n🤖 Respuesta generada\n🔄 Intentos realizados\n\nObjetivo:\nIniciar el proceso de QA.",
+        "height": 256,
+        "width": 304,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        432,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "51f8130a-c8ee-4797-a2ca-c1eae9a4f023",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 🧠 Evaluación Automática\n\nEl Juez IA evalúa:\n\n✅ Exactitud factual\n✅ Completitud\n✅ Claridad\n✅ Utilidad\n\nGenera un veredicto\nestructurado.",
+        "height": 272,
+        "width": 336,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        864,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "96945af0-80e7-4bf7-90bb-df35567c9214",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 🚦 Toma de Decisión QA\n\nLa respuesta puede ser:\n\n✅ ACEPTADO\n\n🔄 CORREGIR\n\n👨‍💼 REVISION_HUMANA\n\nsegún el análisis realizado.",
+        "height": 272,
+        "width": 272,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1328,
+        912
+      ],
+      "typeVersion": 1,
+      "id": "388f1a66-0037-477c-9963-73e3e9ccd9e1",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 🔄 Ciclo de Mejora Continua\n\nSi la respuesta es mejorable:\n\n➕ Incrementar contador\n🤖 Corregir respuesta\n🧠 Re-evaluar calidad\n\nhasta alcanzar\naceptación o límite.",
+        "height": 272,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1536,
+        1888
+      ],
+      "typeVersion": 1,
+      "id": "085440e5-671d-41c5-b82f-6d3edd436d30",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "65f5d7f2-27e1-4e41-ba1b-c9ebed5929f2",
+              "name": "consulta",
+              "value": "={{ $('Unificador').item.json.consulta }}",
+              "type": "string"
+            },
+            {
+              "id": "2b0427c1-3fe1-4701-b31d-e2d5636d276f",
+              "name": "respuesta_a_evaluar",
+              "value": "={{ $('Unificador').item.json.respuesta_a_evaluar }}",
+              "type": "string"
+            },
+            {
+              "id": "1ca98a50-5600-444c-9bf8-979885c6a7f0",
+              "name": "intentos_correccion",
+              "value": "={{ $('Unificador').item.json.intentos_correccion }}",
+              "type": "number"
+            },
+            {
+              "id": "4c755979-dd5f-41f7-9e43-4010b04d2d02",
+              "name": "max_intentos",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "4ce7e461-6fd1-4382-a4b4-f2af8d60b08c",
+              "name": "output.estado_veredicto",
+              "value": "={{ $json.output.estado_veredicto }}",
+              "type": "string"
+            },
+            {
+              "id": "8afdad7a-6106-4ae2-b771-adb7fbbffd7b",
+              "name": "output.exactitud_factual",
+              "value": "={{ $json.output.exactitud_factual }}",
+              "type": "string"
+            },
+            {
+              "id": "0877503e-e15a-44ee-a469-687cc0491a7f",
+              "name": "output.feedback",
+              "value": "={{ $json.output.feedback }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1440,
+        1280
+      ],
+      "id": "05e8fb4d-d1e9-48a0-b521-7dede432c8fb",
+      "name": "📦 Consolidar Estado QA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "539b157d-f262-4f3f-ba13-20360e44c28d",
+              "name": "consulta",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.consulta }}",
+              "type": "string"
+            },
+            {
+              "id": "a1db89f3-63d5-4820-8f58-fc15008e4c95",
+              "name": "respuesta_a_evaluar",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.respuesta_a_evaluar }}",
+              "type": "string"
+            },
+            {
+              "id": "78a6b00e-c06d-422e-b2b0-0f235a0187ad",
+              "name": "intentos_correccion",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.intentos_correccion }}",
+              "type": "string"
+            },
+            {
+              "id": "82829486-e163-48de-be0c-074d523bd5e7",
+              "name": "max_intentos",
+              "value": "={{ $('📋 Preparar Contexto QA').item.json.max_intentos }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        752,
+        1504
+      ],
+      "id": "c0d0ecca-517c-4463-a640-7a5b1448d1bc",
+      "name": "Unificador",
+      "retryOnFail": false,
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🤖 Worker IA - Mejora de Respuesta",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser - Veredicto QA": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "🧠 Juez IA - Evaluación de Calidad",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser - Respuesta Corregida": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "🤖 Worker IA - Mejora de Respuesta",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 Juez IA - Evaluación de Calidad",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🧠 Juez IA - Evaluación de Calidad",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "📥 IN - Solicitud de Evaluación QA": {
+      "main": [
+        [
+          {
+            "node": "📋 Preparar Contexto QA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Preparar Contexto QA": {
+      "main": [
+        [
+          {
+            "node": "Unificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Juez IA - Evaluación de Calidad": {
+      "main": [
+        [
+          {
+            "node": "📦 Consolidar Estado QA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "🤖 Worker IA - Mejora de Respuesta",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "🚦 Decisión QA": {
+      "main": [
+        [
+          {
+            "node": "✅ OUT - RESPONDIDA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔄 Verificar Intentos Permitidos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "👨‍💼 OUT - REVISION_HUMANA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔄 Verificar Intentos Permitidos": {
+      "main": [
+        [
+          {
+            "node": "➕ Incrementar Contador QA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🚨 OUT - MAX_INTENTOS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "➕ Incrementar Contador QA": {
+      "main": [
+        [
+          {
+            "node": "🤖 Worker IA - Mejora de Respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 Worker IA - Mejora de Respuesta": {
+      "main": [
+        [
+          {
+            "node": "✅ Preparar Respuesta Corregida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Preparar Respuesta Corregida": {
+      "main": [
+        [
+          {
+            "node": "Unificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📦 Consolidar Estado QA": {
+      "main": [
+        [
+          {
+            "node": "🚦 Decisión QA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unificador": {
+      "main": [
+        [
+          {
+            "node": "🧠 Juez IA - Evaluación de Calidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9137c358-6233-4f53-8f58-4ad719afd6f4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5349dfbeee22dea1570d2313368ae1156714c5a6c9e23a17ec56a45677abcdcc"
+  },
+  "nodeGroups": [],
+  "id": "bBjVW9swlqFdCi9f",
+  "tags": []
+}
